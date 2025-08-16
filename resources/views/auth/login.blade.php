@@ -1,95 +1,232 @@
-@extends('layouts.auth')
+<!DOCTYPE html>
+<html lang="id">
 
-@section('main-content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-xl-10 col-lg-12 col-md-9">
-            <div class="card o-hidden border-0 shadow-lg my-5">
-                <div class="card-body p-0">
-                    <div class="row">
-                        <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-                        <div class="col-lg-6">
-                            <div class="p-5">
-                                <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">{{ __('Login') }}</h1>
-                                </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halaman Login</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --accent-color: #4D2D8C;
+            /* Warna background utama */
+            --base-color: #fff;
+            --text-color: #2E2B41;
+            --input-color: #F3F0FF;
+            --error-color: #f06272;
+            --google-color: #db4437;
+        }
 
-                                @if ($errors->any())
-                                    <div class="alert alert-danger border-left-danger" role="alert">
-                                        <ul class="pl-4 my-2">
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                @endif
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-                                <form method="POST" action="{{ route('login') }}" class="user">
-                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        html {
+            font-family: 'Poppins', sans-serif;
+            font-size: 12pt;
+            color: var(--text-color);
+        }
 
-                                    <div class="form-group">
-                                        <input type="email" class="form-control form-control-user" name="email" placeholder="{{ __('E-Mail Address') }}" value="{{ old('email') }}" required autofocus>
-                                    </div>
+        body {
+            min-height: 100vh;
+            background-color: var(--accent-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: auto;
+        }
 
-                                    <div class="form-group">
-                                        <input type="password" class="form-control form-control-user" name="password" placeholder="{{ __('Password') }}" required>
-                                    </div>
+        .wrapper {
+            background-color: var(--base-color);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
 
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox small">
-                                            <input type="checkbox" class="custom-control-input" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-                                            <label class="custom-control-label" for="remember">{{ __('Remember Me') }}</label>
-                                        </div>
-                                    </div>
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
 
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">
-                                            {{ __('Login') }}
-                                        </button>
-                                    </div>
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
 
-                                    <hr>
+        form>div {
+            display: flex;
+            width: 100%;
+            max-width: 400px;
+        }
 
-                                    <div class="form-group">
-                                        <button type="button" class="btn btn-github btn-user btn-block">
-                                            <i class="fab fa-github fa-fw"></i> {{ __('Login with GitHub') }}
-                                        </button>
-                                    </div>
+        form label {
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent-color);
+            color: var(--base-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px 0 0 10px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
 
-                                    <div class="form-group">
-                                        <button type="button" class="btn btn-twitter btn-user btn-block">
-                                            <i class="fab fa-twitter fa-fw"></i> {{ __('Login with Twitter') }}
-                                        </button>
-                                    </div>
+        form input {
+            flex: 1;
+            height: 50px;
+            padding: 0 1em;
+            border: 2px solid var(--input-color);
+            border-left: none;
+            border-radius: 0 10px 10px 0;
+            font: inherit;
+            background-color: var(--input-color);
+            transition: border 0.2s;
+        }
 
-                                    <div class="form-group">
-                                        <button type="button" class="btn btn-facebook btn-user btn-block">
-                                            <i class="fab fa-facebook-f fa-fw"></i> {{ __('Login with Facebook') }}
-                                        </button>
-                                    </div>
-                                </form>
+        form input:focus {
+            outline: none;
+            border-color: var(--text-color);
+        }
 
-                                <hr>
+        form div:has(input:focus) label {
+            background-color: var(--text-color);
+        }
 
-                                @if (Route::has('password.request'))
-                                    <div class="text-center">
-                                        <a class="small" href="{{ route('password.request') }}">
-                                            {{ __('Forgot Password?') }}
-                                        </a>
-                                    </div>
-                                @endif
+        form button {
+            margin-top: 10px;
+            padding: 0.85em 4em;
+            border: none;
+            border-radius: 1000px;
+            background-color: var(--accent-color);
+            color: var(--base-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+        }
 
-                                @if (Route::has('register'))
-                                    <div class="text-center">
-                                        <a class="small" href="{{ route('register') }}">{{ __('Create an Account!') }}</a>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        form button:hover,
+        form button:focus {
+            background-color: var(--text-color);
+            transform: scale(1.02);
+            outline: none;
+        }
+
+        /* Tombol Google */
+        .btn-google {
+            margin-top: 10px;
+            padding: 0.85em 2em;
+            border: none;
+            border-radius: 1000px;
+            background-color: var(--google-color);
+            color: #fff;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s, transform 0.2s;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .btn-google:hover {
+            background-color: #c23321;
+            transform: scale(1.02);
+        }
+
+        .btn-google img {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            padding: 2px;
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        #error-message {
+            color: var(--error-color);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        /* Responsif */
+        @media (max-width: 768px) {
+            .wrapper {
+                padding: 30px 15px;
+                border-radius: 15px;
+            }
+
+            form>div {
+                max-width: 100%;
+            }
+
+            form button,
+            .btn-google {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <h1>Login</h1>
+
+        <!-- Error message statis -->
+        <div id="error-message" style="display:none;">
+            <p>Email atau password salah</p>
         </div>
+
+        <form method="POST" action="#" id="loginForm">
+            <div>
+                <label for="email"><span>@</span></label>
+                <input type="email" name="email" id="email" placeholder="Email" required>
+            </div>
+            <div>
+                <label for="password">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
+                        fill="white">
+                        <path
+                            d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm240-200q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80Z" />
+                    </svg>
+                </label>
+                <input type="password" name="password" id="password" placeholder="Password" required>
+            </div>
+            <button type="submit">Login</button>
+            <button class="btn-google" onclick="alert('Login Google belum diaktifkan (statis).')">
+                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google Icon">
+                Login dengan Google
+            </button>
+        </form>
+
+        <br>
+        <p>Belum punya akun? <a href="{{ route('register') }}">Daftar sekarang</a></p>
+
     </div>
-</div>
-@endsection
+</body>
+</html>

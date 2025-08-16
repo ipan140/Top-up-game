@@ -1062,3 +1062,7 @@
 #55 C:\\Users\\ipanr\\Downloads\\Top up game\\laravel-sb-admin-2\\server.php(21): require_once('C:\\\\Users\\\\ipanr\\\\...')
 #56 {main}
 "} 
+[2025-08-16 13:24:21] local.ERROR: Allowed memory size of 536870912 bytes exhausted (tried to allocate 32768 bytes) {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Allowed memory size of 536870912 bytes exhausted (tried to allocate 32768 bytes) at C:\\Users\\ipanr\\Downloads\\Top up game\\laravel-sb-admin-2\\storage\\framework\\views\\2be4e41bad486d9d6fb8406f516ee67f.php:1)
+[stacktrace]
+#0 {main}
+"} 
