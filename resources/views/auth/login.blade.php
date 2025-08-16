@@ -202,10 +202,11 @@
             <p>Email atau password salah</p>
         </div>
 
-        <form method="POST" action="#" id="loginForm">
+        <form method="POST" action="{{ route('login') }}" id="loginForm">
+            @csrf
             <div>
                 <label for="email"><span>@</span></label>
-                <input type="email" name="email" id="email" placeholder="Email" required>
+                <input type="email" name="email" id="email" placeholder="Email" required value="{{ old('email') }}">
             </div>
             <div>
                 <label for="password">
@@ -217,11 +218,19 @@
                 </label>
                 <input type="password" name="password" id="password" placeholder="Password" required>
             </div>
+
+            @error('email')
+                <span id="error-message">{{ $message }}</span>
+            @enderror
+            @error('password')
+                <span id="error-message">{{ $message }}</span>
+            @enderror
+
             <button type="submit">Login</button>
-            <button class="btn-google" onclick="alert('Login Google belum diaktifkan (statis).')">
-                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google Icon">
-                Login dengan Google
-            </button>
+        <button class="btn-google" onclick="alert('Login Google belum diaktifkan (statis).')">
+            <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google Icon">
+            Login dengan Google
+        </button>
         </form>
 
         <br>
@@ -229,4 +238,5 @@
 
     </div>
 </body>
+
 </html>
