@@ -43,3 +43,4 @@ Route::resource('topup-types', TopupTypeController::class)->names('topup_types')
 Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::resource('topup_transactions', TopupTransactionController::class);
 });
+Route::resource('users', App\Http\Controllers\UserController::class);

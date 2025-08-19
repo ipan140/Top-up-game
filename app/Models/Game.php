@@ -13,6 +13,7 @@ class Game extends Model
     protected $fillable = [
         'category_id',
         'name',
+        'image', // 👈 tambahkan kolom image
     ];
 
     /**

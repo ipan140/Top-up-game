@@ -29,6 +29,7 @@
                         <tr>
                             <th>No</th>
                             <th>Nama Kategori</th>
+                            <th>Deskripsi</th>
                             <th style="width: 150px;">Aksi</th>
                         </tr>
                     </thead>
@@ -37,6 +38,7 @@
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $category->name }}</td>
+                                <td>{{ $category->description }}</td>
                                 <td>
                                     <div class="d-flex flex-wrap justify-content-center gap-2">
                                         <button class="btn btn-warning btn-sm mb-1" data-toggle="modal"
@@ -72,6 +74,10 @@
                                                     <input type="text" name="name" class="form-control"
                                                            value="{{ $category->name }}" required>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label>Deskripsi</label>
+                                                    <textarea name="description" class="form-control">{{ $category->description }}</textarea>
+                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="submit" class="btn btn-success">Simpan</button>
@@ -102,6 +108,10 @@
                     <div class="form-group">
                         <label>Nama Kategori</label>
                         <input type="text" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi</label>
+                        <textarea name="description" class="form-control"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
