@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\GameController;
+use App\Http\Controllers\TopupTypeController;
+use App\Http\Controllers\TopupTransactionController;
 
 
 /*
@@ -33,3 +37,9 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
 Route::get('/about', function () {
     return view('about');
 })->name('about');
+Route::resource('categories', CategoryController::class);
+Route::resource('games', GameController::class);
+Route::resource('topup-types', TopupTypeController::class)->names('topup_types');
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    Route::resource('topup_transactions', TopupTransactionController::class);
+});
