@@ -31,10 +31,12 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
         ]);
 
         Category::create([
             'name' => $request->name,
+            'description' => $request->description,
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan!');
@@ -55,10 +57,12 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
         ]);
 
         $category->update([
             'name' => $request->name,
+            'description' => $request->description,
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui!');

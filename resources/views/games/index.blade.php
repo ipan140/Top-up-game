@@ -30,6 +30,7 @@
                             <th>No</th>
                             <th>Kategori</th>
                             <th>Nama Game</th>
+                            <th>Gambar</th>
                             <th style="width: 150px;">Aksi</th>
                         </tr>
                     </thead>
@@ -39,6 +40,13 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $game->category->name }}</td>
                                 <td>{{ $game->name }}</td>
+                                <td>
+                                    @if($game->image)
+                                        <img src="{{ asset('storage/'.$game->image) }}" alt="{{ $game->name }}" width="80" class="img-thumbnail">
+                                    @else
+                                        <span class="text-muted">Tidak ada</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="d-flex flex-wrap justify-content-center gap-2">
                                         <button class="btn btn-warning btn-sm mb-1" data-toggle="modal"
@@ -61,7 +69,7 @@
                             <div class="modal fade" id="editModal{{ $game->id }}" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
-                                        <form action="{{ route('games.update', $game->id) }}" method="POST">
+                                        <form action="{{ route('games.update', $game->id) }}" method="POST" enctype="multipart/form-data">
                                             @csrf
                                             @method('PUT')
                                             <div class="modal-header">
@@ -85,6 +93,17 @@
                                                     <input type="text" name="name" class="form-control"
                                                            value="{{ $game->name }}" required>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label>Gambar</label><br>
+                                                    @if($game->image)
+                                                        <img src="{{ asset('storage/'.$game->image) }}" width="100" class="mb-2 img-thumbnail d-block">
+                                                    @endif
+                                                    <div class="custom-file">
+                                                        <input type="file" name="image" class="custom-file-input" id="editImage{{ $game->id }}">
+                                                        <label class="custom-file-label" for="editImage{{ $game->id }}">Pilih gambar baru...</label>
+                                                    </div>
+                                                    <small class="text-muted">Kosongkan jika tidak ingin mengubah gambar.</small>
+                                                </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="submit" class="btn btn-success">Simpan</button>
@@ -105,7 +124,7 @@
 <div class="modal fade" id="tambahModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form action="{{ route('games.store') }}" method="POST">
+            <form action="{{ route('games.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Tambah Game</h5>
@@ -124,6 +143,13 @@
                         <label>Nama Game</label>
                         <input type="text" name="name" class="form-control" required>
                     </div>
+                    <div class="form-group">
+                        <label>Gambar</label>
+                        <div class="custom-file">
+                            <input type="file" name="image" class="custom-file-input" id="createImage" required>
+                            <label class="custom-file-label" for="createImage">Pilih gambar...</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Simpan</button>
@@ -133,3 +159,13 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    // Update label saat pilih file
+    $('.custom-file-input').on('change', function() {
+        let fileName = $(this).val().split('\\').pop();
+        $(this).next('.custom-file-label').html(fileName);
+    });
+</script>
+@endpush

@@ -8,58 +8,66 @@ use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
-    /**
-     * Menampilkan semua game.
-     */
     public function index()
     {
-        // Ambil semua game beserta kategori terkait
         $games = Game::with('category')->get();
-
-        // Ambil semua kategori untuk modal tambah/edit
         $categories = Category::all();
-
-        // Pastikan file view ada: resources/views/games/index.blade.php
-        return view('game.index', compact('games', 'categories'));
+        return view('games.index', compact('games', 'categories'));
     }
 
-    /**
-     * Simpan game baru.
-     */
+    public function create()
+    {
+        $categories = Category::all();
+        return view('games.create', compact('categories'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        Game::create($request->only('name', 'category_id'));
+        $data = $request->only(['category_id', 'name']);
 
-        return redirect()->route('game.index')->with('success', 'Game berhasil ditambahkan!');
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('games', 'public');
+        }
+
+        Game::create($data);
+
+        return redirect()->route('games.index')->with('success', 'Game berhasil ditambahkan!');
     }
 
-    /**
-     * Update game.
-     */
+    public function edit(Game $game)
+    {
+        $categories = Category::all();
+        return view('games.edit', compact('game', 'categories'));
+    }
+
     public function update(Request $request, Game $game)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $game->update($request->only('name', 'category_id'));
+        $data = $request->only(['category_id', 'name']);
 
-        return redirect()->route('game.index')->with('success', 'Game berhasil diperbarui!');
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('games', 'public');
+        }
+
+        $game->update($data);
+
+        return redirect()->route('games.index')->with('success', 'Game berhasil diperbarui!');
     }
 
-    /**
-     * Hapus game.
-     */
     public function destroy(Game $game)
     {
         $game->delete();
-
-        return redirect()->route('game.index')->with('success', 'Game berhasil dihapus!');
+        return redirect()->route('games.index')->with('success', 'Game berhasil dihapus!');
     }
 }

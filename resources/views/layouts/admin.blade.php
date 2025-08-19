@@ -55,24 +55,8 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                {{ __('Settings') }}
+                {{ __('Kelola game') }}
             </div>
-
-            <!-- Nav Item - Profile -->
-            <li class="nav-item {{ Nav::isRoute('profile') }}">
-                <a class="nav-link" href="{{ route('profile') }}">
-                    <i class="fas fa-fw fa-user"></i>
-                    <span>{{ __('Profile') }}</span>
-                </a>
-            </li>
-
-            <!-- Nav Item - About -->
-            <li class="nav-item {{ Nav::isRoute('about') }}">
-                <a class="nav-link" href="{{ route('about') }}">
-                    <i class="fas fa-fw fa-hands-helping"></i>
-                    <span>{{ __('About') }}</span>
-                </a>
-            </li>
 
             <!-- Nav Item - Kelola Game -->
             <li
@@ -87,13 +71,46 @@
                     aria-labelledby="headingGame" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item {{ Nav::isRoute('categories.index') }}"
-                            href="{{ route('categories.index') }}">Kategori</a>
-                        <a class="collapse-item {{ Nav::isRoute('games.index') }}"
-                            href="{{ route('games.index') }}">Game</a>
+                            href="{{ route('categories.index') }}">
+                            <i class="fas fa-fw fa-list"></i> {{ __('Kategori') }}
+                        </a>
+                        <a class="collapse-item {{ Nav::isRoute('games.index') }}" href="{{ route('games.index') }}">
+                            <i class="fas fa-fw fa-gamepad"></i> {{ __('Game') }}
+                        </a>
                         <a class="collapse-item {{ Nav::isRoute('topup_types.index') }}"
-                            href="{{ route('topup_types.index') }}">Jenis Topup</a>
+                            href="{{ route('topup_types.index') }}">
+                            <i class="fas fa-fw fa-coins"></i> {{ __('Jenis Topup') }}
+                        </a>
                         <a class="collapse-item {{ Nav::isRoute('topup_transactions.index') }}"
-                            href="{{ route('topup_transactions.index') }}">Transaksi Topup</a>
+                            href="{{ route('topup_transactions.index') }}">
+                            <i class="fas fa-fw fa-exchange-alt"></i> {{ __('Transaksi Topup') }}
+                        </a>
+                    </div>
+                </div>
+            </li>
+
+<div class="sidebar-heading">
+                {{ __('Settings') }}
+            </div>
+            <!-- Nav Item - Settings Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSettings"
+                    aria-expanded="false" aria-controls="collapseSettings">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>{{ __('Settings') }}</span>
+                </a>
+                <div id="collapseSettings" class="collapse" aria-labelledby="headingSettings"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a class="collapse-item {{ Nav::isRoute('profile') }}" href="{{ route('profile') }}">
+                            <i class="fas fa-fw fa-user"></i> {{ __('Profile') }}
+                        </a>
+                        <a class="collapse-item {{ Nav::isRoute('about') }}" href="{{ route('about') }}">
+                            <i class="fas fa-fw fa-hands-helping"></i> {{ __('About') }}
+                        </a>
+                        <a class="collapse-item {{ Nav::isRoute('users.index') }}" href="{{ route('users.index') }}">
+                            <i class="fas fa-fw fa-users"></i> {{ __('Kelola User') }}
+                        </a>
                     </div>
                 </div>
             </li>
