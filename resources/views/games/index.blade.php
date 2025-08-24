@@ -48,15 +48,24 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <div class="d-flex flex-wrap justify-content-center gap-2">
-                                        <button class="btn btn-warning btn-sm mb-1" data-toggle="modal"
+                                    <div class="d-flex flex-column align-items-center gap-2">
+                                        <!-- Tombol Edit -->
+                                        <button class="btn btn-warning btn-sm w-100" data-toggle="modal"
                                                 data-target="#editModal{{ $game->id }}">
                                             <i class="fas fa-edit"></i> Edit
                                         </button>
-                                        <form action="{{ route('games.destroy', $game->id) }}" method="POST" style="display:inline;">
+
+                                        <!-- Tombol Jenis Top Up -->
+                                        <a href="{{ route('topup_types.index', ['game_id' => $game->id]) }}" 
+                                        class="btn btn-info btn-sm w-100">
+                                            <i class="fas fa-coins"></i> Jenis Top Up
+                                        </a>
+
+                                        <!-- Tombol Hapus -->
+                                        <form action="{{ route('games.destroy', $game->id) }}" method="POST" class="w-100">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm mb-1"
+                                            <button type="submit" class="btn btn-danger btn-sm w-100"
                                                     onclick="return confirm('Yakin ingin menghapus?')">
                                                 <i class="fas fa-trash"></i> Hapus
                                             </button>
@@ -64,7 +73,6 @@
                                     </div>
                                 </td>
                             </tr>
-
                             <!-- Modal Edit -->
                             <div class="modal fade" id="editModal{{ $game->id }}" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered">

@@ -70,4 +70,11 @@ class GameController extends Controller
         $game->delete();
         return redirect()->route('games.index')->with('success', 'Game berhasil dihapus!');
     }
+
+    
+    // App\Models\Game.php
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
