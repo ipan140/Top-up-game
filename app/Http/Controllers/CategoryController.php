@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Models\Game;
 
 class CategoryController extends Controller
 {
@@ -75,5 +76,10 @@ class CategoryController extends Controller
     {
         $category->delete();
         return redirect()->route('categories.index')->with('success', 'Kategori berhasil dihapus!');
+    }
+    // App\Models\Category.php
+    public function games()
+    {
+        return $this->hasMany(Game::class);
     }
 }

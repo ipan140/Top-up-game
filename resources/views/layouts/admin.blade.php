@@ -77,10 +77,6 @@
                         <a class="collapse-item {{ Nav::isRoute('games.index') }}" href="{{ route('games.index') }}">
                             <i class="fas fa-fw fa-gamepad"></i> {{ __('Game') }}
                         </a>
-                        <a class="collapse-item {{ Nav::isRoute('topup_types.index') }}"
-                            href="{{ route('topup_types.index') }}">
-                            <i class="fas fa-fw fa-coins"></i> {{ __('Jenis Topup') }}
-                        </a>
                         <a class="collapse-item {{ Nav::isRoute('topup_transactions.index') }}"
                             href="{{ route('topup_transactions.index') }}">
                             <i class="fas fa-fw fa-exchange-alt"></i> {{ __('Transaksi Topup') }}
@@ -89,7 +85,7 @@
                 </div>
             </li>
 
-<div class="sidebar-heading">
+            <div class="sidebar-heading">
                 {{ __('Settings') }}
             </div>
             <!-- Nav Item - Settings Collapse Menu -->

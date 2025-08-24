@@ -7,7 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\TopupTypeController;
 use App\Http\Controllers\TopupTransactionController;
-
+use App\Http\Controllers\LandingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +20,10 @@ use App\Http\Controllers\TopupTransactionController;
 |
 */
 
-Route::get('/', function () {
-    return view('Landingpage.index');
-});
+
+
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+
 
 Auth::routes();
 
@@ -44,3 +45,4 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::resource('topup_transactions', TopupTransactionController::class);
 });
 Route::resource('users', App\Http\Controllers\UserController::class);
+Route::get('/games/{id}', [GameController::class, 'show'])->name('games.show');
