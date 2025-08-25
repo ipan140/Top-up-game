@@ -8,7 +8,7 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\TopupTypeController;
 use App\Http\Controllers\TopupTransactionController;
 use App\Http\Controllers\LandingController;
-
+use App\Http\Controllers\TopupController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,3 +46,6 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 });
 Route::resource('users', App\Http\Controllers\UserController::class);
 Route::get('/games/{id}', [GameController::class, 'show'])->name('games.show');
+// Route::resource('topups', TopupController::class)->only(['index', 'show']);
+Route::resource('topups', TopupController::class)->only(['index']);
+Route::get('/topups/{id}', [TopupController::class, 'show'])->name('topups.show');

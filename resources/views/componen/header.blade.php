@@ -15,10 +15,6 @@
 
         <!-- Menu -->
         <div class="d-flex ms-lg-5 align-items-center">
-            <!-- Home -->
-            {{-- <a href="#" class="nav-link text-white me-4">
-                <i class="fa fa-home me-1"></i> Home
-            </a> --}}
 
             <!-- Histori Pembelian -->
             <a href="#" class="nav-link text-white me-4">
