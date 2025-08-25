@@ -32,3 +32,4 @@ class Game extends Model
         return $this->hasMany(\App\Models\TopupType::class);
     }
 }
+
