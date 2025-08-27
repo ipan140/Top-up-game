@@ -10,7 +10,6 @@
     <style>
         :root {
             --accent-color: #4D2D8C;
-            /* Warna background utama */
             --base-color: #fff;
             --text-color: #2E2B41;
             --input-color: #F3F0FF;
@@ -168,13 +167,13 @@
             text-decoration: underline;
         }
 
-        #error-message {
+        .error-message {
             color: var(--error-color);
             font-size: 0.9rem;
-            margin-bottom: 10px;
+            margin-top: 5px;
+            display: block;
         }
 
-        /* Responsif */
         @media (max-width: 768px) {
             .wrapper {
                 padding: 30px 15px;
@@ -197,46 +196,52 @@
     <div class="wrapper">
         <h1>Login</h1>
 
-        <!-- Error message statis -->
-        <div id="error-message" style="display:none;">
-            <p>Email atau password salah</p>
-        </div>
-
+        {{-- Form login --}}
         <form method="POST" action="{{ route('login') }}" id="loginForm">
             @csrf
+
+            {{-- Email --}}
             <div>
                 <label for="email"><span>@</span></label>
-                <input type="email" name="email" id="email" placeholder="Email" required value="{{ old('email') }}">
+                <input type="email" name="email" id="email" placeholder="Email" value="{{ old('email') }}" required>
             </div>
+            @error('email')
+                <span class="error-message">{{ $message }}</span>
+            @enderror
+
+            {{-- Password --}}
             <div>
                 <label for="password">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
                         fill="white">
-                        <path
-                            d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm240-200q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80Z" />
+                        <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 
+                        23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920
+                        q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400
+                        q0 33-23.5 56.5T720-80H240Zm240-200q33 0 
+                        56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0
+                        -56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240
+                        v-80q0-50-35-85t-85-35q-50 0-85 35t-35 
+                        85v80Z" />
                     </svg>
                 </label>
                 <input type="password" name="password" id="password" placeholder="Password" required>
             </div>
-
-            @error('email')
-                <span id="error-message">{{ $message }}</span>
-            @enderror
             @error('password')
-                <span id="error-message">{{ $message }}</span>
+                <span class="error-message">{{ $message }}</span>
             @enderror
 
+            {{-- Tombol login --}}
             <button type="submit">Login</button>
-        <button class="btn-google" onclick="alert('Login Google belum diaktifkan (statis).')">
-            <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google Icon">
-            Login dengan Google
-        </button>
+
+            {{-- Tombol login Google (dummy) --}}
+            <button type="button" class="btn-google" onclick="alert('Login Google belum diaktifkan (statis).')">
+                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google Icon">
+                Login dengan Google
+            </button>
         </form>
 
         <br>
         <p>Belum punya akun? <a href="{{ route('register') }}">Daftar sekarang</a></p>
-
     </div>
 </body>
-
 </html>
