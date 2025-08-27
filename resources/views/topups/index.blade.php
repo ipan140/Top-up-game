@@ -15,12 +15,11 @@
 
   <style>
     body {
-      background-color: #4D2D8C; /* background hitam */
+      background-color: #4D2D8C;
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
     }
 
-    /* Card gelap semi-transparan */
     .card {
       background-color: rgba(40, 40, 40, 0.95);
       color: #fff;
@@ -35,7 +34,6 @@
       font-size: 1.1rem;
     }
 
-    /* Tombol Topup */
     .topup-btn {
       min-width: 160px;
       min-height: 100px;
@@ -68,7 +66,6 @@
       text-overflow: ellipsis;
     }
 
-    /* Tombol metode pembayaran */
     .btn-outline-primary,
     .btn-outline-success,
     .btn-outline-warning,
@@ -85,7 +82,6 @@
       filter: brightness(1.2);
     }
 
-    /* Input field */
     .form-control {
       background-color: #222;
       color: #fff;
@@ -96,7 +92,6 @@
       color: #bbb;
     }
 
-    /* Footer link & teks */
     small.text-muted {
       color: #ccc;
     }
@@ -122,8 +117,8 @@
           <strong>1. Masukkan User ID</strong>
         </div>
         <div class="card-body">
-          <input type="text" class="form-control mb-2" placeholder="Masukkan User ID">
-          <input type="text" class="form-control" placeholder="Server ID">
+          <input type="text" class="form-control mb-2" placeholder="Masukkan User ID" id="user_id">
+          <input type="text" class="form-control" placeholder="Server ID" id="server_id">
           <small class="text-muted">Cek di profil game kamu untuk menemukan User ID dan Server ID.</small>
         </div>
       </div>
@@ -150,41 +145,26 @@
         </div>
       </div>
 
-      <!-- Step 3: Pilih Pembayaran -->
+      <!-- Step 4: Email -->
       <div class="card shadow-sm mb-4">
         <div class="card-header">
-          <strong>3. Pilih Metode Pembayaran</strong>
+          <strong>3. Email untuk bukti transaksi</strong>
         </div>
         <div class="card-body">
-          <div class="d-flex gap-3 flex-wrap">
-            <button class="btn btn-outline-primary"><i class="fa-brands fa-cc-visa"></i> Visa</button>
-            <button class="btn btn-outline-success"><i class="fa-brands fa-paypal"></i> PayPal</button>
-            <button class="btn btn-outline-warning"><i class="fa-solid fa-wallet"></i> E-Wallet</button>
-            <button class="btn btn-outline-info"><i class="fa-solid fa-money-bill"></i> Bank Transfer</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 4: Detail -->
-      <div class="card shadow-sm mb-4">
-        <div class="card-header">
-          <strong>4. Detail</strong>
-        </div>
-        <div class="card-body">
-          <input type="email" class="form-control mb-2" placeholder="Email untuk bukti transaksi">
+          <input type="email" class="form-control mb-2" placeholder="Email" id="user_email" value="{{ auth()->user()->email ?? '' }}">
           <small class="text-muted">Pastikan email benar agar bukti transaksi bisa terkirim.</small>
         </div>
       </div>
 
       <!-- Tombol Proses -->
       <div class="text-center">
-        <button class="btn btn-lg btn-primary my-3">
+        <button class="btn btn-lg btn-primary my-3" id="btn_proses">
           <i class="fa-solid fa-bolt"></i> Proses Topup
         </button>
       </div>
 
     @elseif(isset($games))
-      <!-- Jika belum pilih game → tampilkan daftar game -->
+      <!-- Daftar Game -->
       <h3 class="mb-4 text-center">Pilih Game untuk Topup</h3>
       <div class="row">
         @foreach($games as $g)
@@ -195,9 +175,9 @@
               <div class="card-body">
                 <h5>{{ $g->name }}</h5>
                 <p class="text-muted">{{ $g->publisher }}</p>
-                <a href="{{ route('topups.index', ['game_id' => $g->id]) }}" class="btn btn-primary btn-sm">
+                <button class="btn btn-primary btn-sm topup-btn" data-id="{{ $g->id }}">
                   Topup Sekarang
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -210,6 +190,10 @@
 
   <!-- JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Midtrans Snap.js -->
+  <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="{{ config('midtrans.client_key') }}"></script>
+
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       // pilih topup
@@ -220,8 +204,70 @@
           document.getElementById('topup_id').value = this.getAttribute('data-id');
         });
       });
+
+      // tombol proses topup
+      document.getElementById('btn_proses').addEventListener('click', function () {
+        let topupId = document.getElementById('topup_id').value;
+        let email = document.getElementById('user_email').value;
+        let userId = document.getElementById('user_id')?.value || '';
+        let serverId = document.getElementById('server_id')?.value || '';
+
+        if (!topupId) {
+          alert('Silakan pilih nominal topup terlebih dahulu!');
+          return;
+        }
+        if (!email) {
+          alert('Silakan masukkan email untuk bukti transaksi!');
+          return;
+        }
+        if (!userId || !serverId) {
+          alert('Silakan masukkan User ID dan Server ID!');
+          return;
+        }
+
+        let btn = this;
+        btn.disabled = true;
+        btn.innerHTML = 'Memproses...';
+
+        fetch("{{ route('checkout') }}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+          },
+          body: JSON.stringify({
+            topup_type_id: topupId,
+            email: email,
+            user_id: userId,
+            server_id: serverId
+          })
+        })
+          .then(res => res.json())
+          .then(data => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Proses Topup';
+
+            if (data.snap_token) {
+              snap.pay(data.snap_token, {
+                onSuccess: function (result) { console.log(result); alert('Pembayaran sukses!'); },
+                onPending: function (result) { console.log(result); alert('Pembayaran pending!'); },
+                onError: function (result) { console.error(result); alert('Terjadi error!'); },
+                onClose: function () { alert('Kamu menutup pembayaran sebelum selesai'); }
+              });
+            } else {
+              alert('Gagal membuat transaksi, coba lagi.');
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Proses Topup';
+            alert('Terjadi error, coba lagi.');
+          });
+      });
     });
   </script>
+
 </body>
 
 </html>
