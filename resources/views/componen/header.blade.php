@@ -63,7 +63,6 @@
             @endauth
 
         </div>
-
     </div>
 </nav>
 
@@ -82,14 +81,14 @@
             </div>
 
             <!-- Modal Body -->
-            <div class="modal-body">
+            <div class="modal-body text-dark">
                 <div class="text-center mb-3">
                     <i class="fa fa-user-circle fa-5x text-secondary"></i>
                 </div>
-                <p><strong>Nama:</strong> {{ Auth::user()->name }}</p>
-                <p><strong>Email:</strong> {{ Auth::user()->email }}</p>
-                <p><strong>Role:</strong> {{ Auth::user()->role ?? '-' }}</p>
-                <p><strong>Dibuat:</strong> {{ Auth::user()->created_at->format('d M Y') }}</p>
+                <p><strong>Nama:</strong> {{ Auth::user()?->name ?? 'Guest' }}</p>
+                <p><strong>Email:</strong> {{ Auth::user()?->email ?? '-' }}</p>
+                <p><strong>Role:</strong> {{ Auth::user()?->role ?? '-' }}</p>
+                <p><strong>Dibuat:</strong> {{ Auth::user()?->created_at?->format('d M Y') ?? '-' }}</p>
             </div>
 
             <!-- Modal Footer -->
@@ -97,15 +96,18 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fa fa-times me-1"></i> Tutup
                 </button>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal"
-                    data-bs-dismiss="modal">
-                    <i class="fa fa-edit me-1"></i> Edit Profil
-                </button>
+                @auth
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#editProfileModal" data-bs-dismiss="modal">
+                        <i class="fa fa-edit me-1"></i> Edit Profil
+                    </button>
+                @endauth
             </div>
 
         </div>
     </div>
 </div>
+
 <!-- Modal Edit Profil -->
 <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -121,7 +123,7 @@
             </div>
 
             <!-- Modal Body -->
-            <div class="modal-body">
+            <div class="modal-body text-dark">
                 <form method="POST" action="{{ route('profile.update') }}">
                     @csrf
                     @method('PUT')
@@ -129,15 +131,15 @@
                     <!-- Nama -->
                     <div class="mb-3">
                         <label for="name" class="form-label"><strong>Nama</strong></label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{ Auth::user()->name }}"
-                            required>
+                        <input type="text" class="form-control" id="name" name="name"
+                            value="{{ Auth::user()?->name ?? '' }}" required>
                     </div>
 
                     <!-- Email -->
                     <div class="mb-3">
                         <label for="email" class="form-label"><strong>Email</strong></label>
                         <input type="email" class="form-control" id="email" name="email"
-                            value="{{ Auth::user()->email }}" required>
+                            value="{{ Auth::user()?->email ?? '' }}" required>
                     </div>
 
                     <!-- Password -->
@@ -164,11 +166,17 @@
 </div>
 
 <style>
+    /* Pastikan teks modal selalu hitam */
     #profileModal .modal-body,
     #profileModal .modal-footer,
     #profileModal .modal-header,
     #profileModal p,
-    #profileModal strong {
+    #profileModal strong,
+    #editProfileModal .modal-body,
+    #editProfileModal .modal-footer,
+    #editProfileModal .modal-header,
+    #editProfileModal label,
+    #editProfileModal strong {
         color: #000 !important;
     }
 </style>
