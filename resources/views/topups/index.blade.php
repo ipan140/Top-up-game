@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title>Widan Store | Top Up Game Terpercaya</title>
   <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon-mz.png') }}">
@@ -34,7 +35,7 @@
       font-size: 1.1rem;
     }
 
-    .topup-btn {
+    .topup-nominal {
       min-width: 160px;
       min-height: 100px;
       border-radius: 12px;
@@ -46,40 +47,17 @@
       background-color: transparent;
     }
 
-    .topup-btn:hover {
+    .topup-nominal:hover {
       background-color: #0d6efd;
       border-color: #0d6efd;
       color: #fff;
       transform: scale(1.05);
     }
 
-    .topup-btn.active {
+    .topup-nominal.active {
       background-color: #0d6efd;
       border-color: #0d6efd;
       color: #fff;
-    }
-
-    .topup-btn div,
-    .topup-btn small {
-      white-space: normal;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .btn-outline-primary,
-    .btn-outline-success,
-    .btn-outline-warning,
-    .btn-outline-info {
-      color: #fff;
-      border-width: 2px;
-    }
-
-    .btn-outline-primary:hover,
-    .btn-outline-success:hover,
-    .btn-outline-warning:hover,
-    .btn-outline-info:hover {
-      color: #fff;
-      filter: brightness(1.2);
     }
 
     .form-control {
@@ -95,7 +73,24 @@
     small.text-muted {
       color: #ccc;
     }
+
+    /* 🔥 Custom Snap Midtrans Overlay */
+    .snap-midtrans-overlay {
+      background: #ffffff !important; /* full putih */
+    }
+
+    /* 🔥 Custom Popup */
+    .snap-midtrans-popup {
+      background: #fff !important;
+      border-radius: 16px !important;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25) !important;
+    }
   </style>
+
+  <!-- Midtrans Snap.js -->
+  <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="{{ config('midtrans.client_key') }}">
+  </script>
 </head>
 
 <body>
@@ -133,7 +128,7 @@
             @foreach($game->topupTypes as $topup)
               <div class="col-6 col-md-3 mb-3">
                 <button type="button"
-                  class="topup-btn w-100 h-100 py-4 d-flex flex-column align-items-center justify-content-center"
+                  class="topup-nominal w-100 h-100 py-4 d-flex flex-column align-items-center justify-content-center"
                   data-id="{{ $topup->id }}">
                   <div class="fw-bold fs-6">{{ $topup->name }}</div>
                   <small class="d-block">Rp {{ number_format($topup->price_per_unit, 0, ',', '.') }}</small>
@@ -145,13 +140,14 @@
         </div>
       </div>
 
-      <!-- Step 4: Email -->
+      <!-- Step 3: Email -->
       <div class="card shadow-sm mb-4">
         <div class="card-header">
           <strong>3. Email untuk bukti transaksi</strong>
         </div>
         <div class="card-body">
-          <input type="email" class="form-control mb-2" placeholder="Email" id="user_email" value="{{ auth()->user()->email ?? '' }}">
+          <input type="email" class="form-control mb-2" placeholder="Email" id="user_email"
+            value="{{ auth()->user()->email ?? '' }}">
           <small class="text-muted">Pastikan email benar agar bukti transaksi bisa terkirim.</small>
         </div>
       </div>
@@ -175,9 +171,9 @@
               <div class="card-body">
                 <h5>{{ $g->name }}</h5>
                 <p class="text-muted">{{ $g->publisher }}</p>
-                <button class="btn btn-primary btn-sm topup-btn" data-id="{{ $g->id }}">
+                <a href="{{ route('game.show', $g->id) }}" class="btn btn-primary btn-sm">
                   Topup Sekarang
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -190,84 +186,84 @@
 
   <!-- JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Midtrans Snap.js -->
-  <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
-    data-client-key="{{ config('midtrans.client_key') }}"></script>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      // pilih topup
-      document.querySelectorAll('.topup-btn').forEach(btn => {
+      // pilih nominal
+      document.querySelectorAll('.topup-nominal').forEach(btn => {
         btn.addEventListener('click', function () {
-          document.querySelectorAll('.topup-btn').forEach(el => el.classList.remove('active'));
+          document.querySelectorAll('.topup-nominal').forEach(el => el.classList.remove('active'));
           this.classList.add('active');
           document.getElementById('topup_id').value = this.getAttribute('data-id');
         });
       });
 
       // tombol proses topup
-      document.getElementById('btn_proses').addEventListener('click', function () {
-        let topupId = document.getElementById('topup_id').value;
-        let email = document.getElementById('user_email').value;
-        let userId = document.getElementById('user_id')?.value || '';
-        let serverId = document.getElementById('server_id')?.value || '';
+      const prosesBtn = document.getElementById('btn_proses');
+      if (prosesBtn) {
+        prosesBtn.addEventListener('click', function () {
+          let topupId = document.getElementById('topup_id').value;
+          let email = document.getElementById('user_email').value;
+          let userId = document.getElementById('user_id')?.value || '';
+          let serverId = document.getElementById('server_id')?.value || '';
 
-        if (!topupId) {
-          alert('Silakan pilih nominal topup terlebih dahulu!');
-          return;
-        }
-        if (!email) {
-          alert('Silakan masukkan email untuk bukti transaksi!');
-          return;
-        }
-        if (!userId || !serverId) {
-          alert('Silakan masukkan User ID dan Server ID!');
-          return;
-        }
+          if (!topupId) return alert('Silakan pilih nominal topup terlebih dahulu!');
+          if (!email) return alert('Silakan masukkan email untuk bukti transaksi!');
+          if (!userId || !serverId) return alert('Silakan masukkan User ID dan Server ID!');
 
-        let btn = this;
-        btn.disabled = true;
-        btn.innerHTML = 'Memproses...';
+          let btn = this;
+          btn.disabled = true;
+          btn.innerHTML = 'Memproses...';
 
-        fetch("{{ route('checkout') }}", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-          },
-          body: JSON.stringify({
-            topup_type_id: topupId,
-            email: email,
-            user_id: userId,
-            server_id: serverId
+          let formData = new FormData();
+          formData.append('topup_type_id', topupId);
+          formData.append('email', email);
+          formData.append('user_id', userId);
+          formData.append('server_id', serverId);
+
+          fetch("{{ route('checkout') }}", {
+            method: "POST",
+            headers: {
+              "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: formData
           })
-        })
-          .then(res => res.json())
-          .then(data => {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Proses Topup';
+            .then(res => res.json())
+            .then(data => {
+              btn.disabled = false;
+              btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Proses Topup';
 
-            if (data.snap_token) {
-              snap.pay(data.snap_token, {
-                onSuccess: function (result) { console.log(result); alert('Pembayaran sukses!'); },
-                onPending: function (result) { console.log(result); alert('Pembayaran pending!'); },
-                onError: function (result) { console.error(result); alert('Terjadi error!'); },
-                onClose: function () { alert('Kamu menutup pembayaran sebelum selesai'); }
-              });
-            } else {
-              alert('Gagal membuat transaksi, coba lagi.');
-            }
-          })
-          .catch(err => {
-            console.error(err);
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Proses Topup';
-            alert('Terjadi error, coba lagi.');
-          });
-      });
+              if (data.snap_token) {
+                snap.pay(data.snap_token, {
+                  onSuccess: function (result) {
+                    console.log(result);
+                    alert('Pembayaran sukses!');
+                  },
+                  onPending: function (result) {
+                    console.log(result);
+                    alert('Pembayaran pending!');
+                  },
+                  onError: function (result) {
+                    console.error(result);
+                    alert('Terjadi error!');
+                  },
+                  onClose: function () {
+                    alert('Kamu menutup pembayaran sebelum selesai');
+                  }
+                });
+              } else {
+                alert(data.error || 'Gagal membuat transaksi, coba lagi.');
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              btn.disabled = false;
+              btn.innerHTML = '<i class="fa-solid fa-bolt"></i> Proses Topup';
+              alert('Terjadi error, coba lagi.');
+            });
+        });
+      }
     });
   </script>
-
 </body>
-
 </html>
