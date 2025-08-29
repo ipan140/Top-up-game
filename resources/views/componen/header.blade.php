@@ -1,4 +1,5 @@
 <!-- Header -->
+<!-- Header -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
     <div class="container">
 
@@ -7,61 +8,67 @@
             <i class="fa-solid fa-gamepad me-2"></i> Tokomu.
         </a>
 
-        <!-- Search Box -->
-        <form class="d-flex mx-lg-5 flex-grow-1" role="search">
-            <input class="form-control me-2" type="search" placeholder="Cari Sesuatu" aria-label="Search">
-            <button class="btn btn-outline-light" type="submit"><i class="fa fa-search"></i></button>
-        </form>
+        <!-- Tombol Toggle (Muncul di Mobile) -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-        <!-- Menu -->
-        <div class="d-flex ms-lg-5 align-items-center">
+        <!-- Isi Navbar (Collapse di Mobile) -->
+        <div class="collapse navbar-collapse" id="navbarContent">
 
-            <!-- Histori Pembelian -->
-            <a href="{{ url('/histori') }}" class="nav-link text-white me-4">
-                <i class="fa fa-shopping-bag me-1"></i> Histori
-            </a>
+            <!-- Search Box -->
+            <form class="d-flex mx-lg-5 my-3 my-lg-0 flex-grow-1" role="search">
+                <input class="form-control me-2" type="search" placeholder="Cari Sesuatu" aria-label="Search">
+                <button class="btn btn-outline-light" type="submit"><i class="fa fa-search"></i></button>
+            </form>
 
-            <!-- Notifikasi -->
-            <a href="{{ url('/notifikasi') }}" class="nav-link text-white me-4 position-relative">
-                <i class="fa fa-bell"></i>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    3
-                </span>
-            </a>
+            <!-- Menu -->
+            <div class="d-flex ms-lg-5 align-items-center flex-column flex-lg-row">
 
-            <!-- Login / User Dropdown -->
-            @auth
-                <div class="nav-item dropdown">
-                    <a class="nav-link text-white dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
-                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-user me-1"></i> {{ Auth::user()->name }}
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">
-                                <i class="fa fa-id-card me-2"></i> Profil Saya
-                            </a>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="dropdown-item text-danger">
-                                    <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            @else
-                <a href="{{ route('login') }}" class="nav-link text-white">
-                    <i class="fa fa-user me-1"></i> Login
+                <!-- Histori -->
+                <a href="{{ url('/histori') }}" class="nav-link text-white me-lg-4 mb-2 mb-lg-0">
+                    <i class="fa fa-shopping-bag me-1"></i> Histori
                 </a>
-            @endauth
 
+                <!-- Notifikasi -->
+                <a href="{{ url('/notifikasi') }}" class="nav-link text-white me-lg-4 mb-2 mb-lg-0 position-relative">
+                    <i class="fa fa-bell"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        3
+                    </span>
+                </a>
+
+                <!-- User Dropdown -->
+                @auth
+                    <div class="nav-item dropdown">
+                        <a class="nav-link text-white dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
+                            role="button" data-bs-toggle="dropdown">
+                            <i class="fa fa-user me-1"></i> {{ Auth::user()->name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">
+                                    <i class="fa fa-id-card me-2"></i> Profil Saya
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}" class="nav-link text-white">
+                        <i class="fa fa-user me-1"></i> Login
+                    </a>
+                @endauth
+
+            </div>
         </div>
     </div>
 </nav>

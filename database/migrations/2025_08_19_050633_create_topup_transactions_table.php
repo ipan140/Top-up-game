@@ -6,25 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('topup_transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+            // Relasi
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
             $table->foreignId('topup_type_id')->constrained()->onDelete('cascade');
-            $table->integer('quantity');
-            $table->decimal('total_price', 12, 2);
-            $table->enum('status', ['pending', 'success', 'failed'])->default('pending');
+
+            // Info transaksi
+            $table->string('order_id')->unique();
+            $table->decimal('gross_amount', 15, 2); // jumlah bayar
+            $table->integer('quantity')->default(1);
+            $table->string('status')->default('pending'); // pending, success, failed
+
+            // Info tambahan
+            $table->string('payment_type')->nullable();
+            $table->string('snap_token')->nullable(); // token midtrans
+            $table->string('email');                  // email user
+            $table->string('game_user_id');           // ID player game
+            $table->string('server_id');              // server id
+
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('topup_transactions');

@@ -2,11 +2,28 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class TopupTransaction extends Model
 {
-    protected $fillable = ['user_id', 'topup_type_id', 'quantity', 'total_price', 'status'];
+    use HasFactory;
+
+    protected $table = 'topup_transactions';
+
+    protected $fillable = [
+        'order_id',
+        'topup_type_id',
+        'user_id',
+        'server_id',
+        'game_user_id',
+        'email',
+        'gross_amount',
+        'quantity',
+        'status',
+        'payment_type',
+        'snap_token',
+    ];
 
     public function user()
     {
@@ -18,4 +35,3 @@ class TopupTransaction extends Model
         return $this->belongsTo(TopupType::class);
     }
 }
-
